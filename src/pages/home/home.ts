@@ -8,6 +8,7 @@ import {LoginModel} from '../../Models/Login/login.model';
 
 import {Auth0Vars} from '../../auth0-variables';
 
+import {SideMenuPage, SearchPage} from '../pages';
 
 
 declare var Auth0: any;
@@ -21,11 +22,10 @@ export class HomePage {
   
   public auth0 = new Auth0({clientID: Auth0Vars.AUTH0_CLIENT_ID, domain: Auth0Vars.AUTH0_DOMAIN, callbackURL:  location.href, responseType: 'token' });
 
-  constructor(public navCtrl: NavController, 
+  constructor(private navCtrl: NavController, 
   public auth : AuthService,
   private loadingController : LoadingController) {
-        this.loginModel =  new LoginModel();
-        
+      this.loginModel =  new LoginModel();
   }
 
   login(){
@@ -33,8 +33,9 @@ export class HomePage {
       content : 'Logging in please wait...'
     });
 
-    loader.present().then(()=>{
-      this.auth0.login({
+    loader.present();
+
+    this.auth0.login({
             connection: 'Username-Password-Authentication',
             username:   this.loginModel.UserName,
             password:   this.loginModel.Password,
@@ -54,10 +55,12 @@ export class HomePage {
             {
                 alert('Account number is not assigned, please contact administrator');
                 this.auth.logout();
-            }            
+            }                      
           });
-    });
-    
+  }
+
+  gotoSideMenu(){
+    this.navCtrl.push(SideMenuPage);
   }
 }
 
