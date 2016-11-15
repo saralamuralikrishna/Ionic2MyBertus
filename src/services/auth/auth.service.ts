@@ -12,12 +12,12 @@ declare var Auth0Lock: any;
 export class AuthService {
 
   jwtHelper: JwtHelper = new JwtHelper();
-  auth0 = new Auth0({clientID: Auth0Vars.AUTH0_CLIENT_ID, domain: Auth0Vars.AUTH0_DOMAIN });
+  auth0 = new Auth0({ clientID: Auth0Vars.AUTH0_CLIENT_ID, domain: Auth0Vars.AUTH0_DOMAIN });
   lock = new Auth0Lock(Auth0Vars.AUTH0_CLIENT_ID, Auth0Vars.AUTH0_DOMAIN, {
     auth: {
       redirect: false,
       params: {
-        scope: 'openid user_metadata roles offline_access',
+        scope: 'openid username email user_id user_metadata roles offline_access',
       }
     }
   });
@@ -26,7 +26,7 @@ export class AuthService {
   user: Object;
   zoneImpl: NgZone;
   idToken: string;
-  
+
   constructor(private authHttp: AuthHttp, zone: NgZone) {
     this.zoneImpl = zone;
     // Check if there is a profile saved in local storage
@@ -43,55 +43,54 @@ export class AuthService {
     this.lock.on('authenticated', authResult => {
       this.authResultStore(authResult);
       // Fetch profile information
-      
+
 
       this.lock.hide();
 
-    });    
+    });
   }
 
-  public lockGetProfile(idToken)
-  {
-      this.lock.getProfile(idToken, (error, profile) => {        
-        if (error) {
-          // Handle error
-          alert(error);
-          return;
-        }
+  public lockGetProfile(idToken) {
+    this.lock.getProfile(idToken, (error, profile) => {
+      if (error) {
+        // Handle error
+        alert(error);
+        return;
+      }
 
-        profile.user_metadata = profile.user_metadata || {};
-        this.authSetStorageAndUser(profile);
-      });
+      profile.user_metadata = profile.user_metadata || {};
+      this.authSetStorageAndUser(profile);
+    });
   }
 
-  public authSetStorageAndUser(profile)
-  {
+  public authSetStorageAndUser(profile) {
     this.storage.set('profile', JSON.stringify(profile));
     this.user = profile;
   }
 
-  public authResultStore(authResult)
-  {
-      this.storage.set('id_token', authResult.idToken);
-      this.idToken = authResult.idToken;
+  public authResultStore(authResult) {
+    console.log(authResult.idToken);
+    this.storage.set('id_token', authResult.idToken);
+    this.idToken = authResult.idToken;
 
-      
 
-      this.storage.set('refresh_token', authResult.refreshToken);
-      this.zoneImpl.run(() => this.user = authResult.profile);
-      // Schedule a token refresh
-      this.scheduleRefresh();
+
+    this.storage.set('refresh_token', authResult.refreshToken);
+    this.zoneImpl.run(() => this.user = authResult.profile);
+    // Schedule a token refresh
+    //this.scheduleRefresh();
   }
 
-  public authenticated() { 
+
+  public authenticated() {
     return tokenNotExpired('id_token', this.idToken);
   }
-  
+
   public login() {
     // Show the Auth0 Lock widget
     this.lock.show();
   }
-  
+
   public logout() {
     this.storage.remove('profile');
     this.storage.remove('id_token');
@@ -101,11 +100,10 @@ export class AuthService {
     // Unschedule the token refresh
     this.unscheduleRefresh();
   }
-  
+
   public scheduleRefresh() {
     // If the user is authenticated, use the token stream
     // provided by angular2-jwt and flatMap the token
-
     let source = Observable.of(this.idToken).flatMap(
       token => {
         // The delay to generate in this case is the difference
@@ -114,17 +112,17 @@ export class AuthService {
         let jwtExp = this.jwtHelper.decodeToken(token).exp;
         let iat = new Date(0);
         let exp = new Date(0);
-        
+
         let delay = (exp.setUTCSeconds(jwtExp) - iat.setUTCSeconds(jwtIat));
-        
+
         return Observable.interval(delay);
       });
-     
+
     this.refreshSubscription = source.subscribe(() => {
       this.getNewJwt();
     });
   }
-  
+
   public startupTokenRefresh() {
     // If the user is authenticated, use the token stream
     // provided by angular2-jwt and flatMap the token
@@ -138,29 +136,29 @@ export class AuthService {
           let exp: Date = new Date(0);
           exp.setUTCSeconds(jwtExp);
           let delay: number = exp.valueOf() - now;
-          
+
           // Use the delay in a timer to
           // run the refresh at the proper time
           return Observable.timer(delay);
         });
-      
-       // Once the delay time from above is
-       // reached, get a new JWT and schedule
-       // additional refreshes
-       source.subscribe(() => {
-         this.getNewJwt();
-         this.scheduleRefresh();
-       });
+
+      // Once the delay time from above is
+      // reached, get a new JWT and schedule
+      // additional refreshes
+      source.subscribe(() => {
+        this.getNewJwt();
+        this.scheduleRefresh();
+      });
     }
   }
-  
+
   public unscheduleRefresh() {
     // Unsubscribe fromt the refresh
     if (this.refreshSubscription) {
       this.refreshSubscription.unsubscribe();
     }
   }
-  
+
   public getNewJwt() {
     // Get a new JWT from Auth0 using the refresh token saved
     // in local storage
@@ -175,6 +173,6 @@ export class AuthService {
     }).catch(error => {
       console.log(error);
     });
-    
+
   }
 }

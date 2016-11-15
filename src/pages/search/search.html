@@ -1,30 +1,27 @@
-<ion-header >
-  <ion-navbar color="primary">
-    <button ion-button menuToggle>
+<ion-header>
+	<ion-navbar color="primary">
+		<button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
-    <ion-toolbar>
-      <form (ngSubmit)="getItems($event)">
-          <ion-searchbar aria-placeholder="Search..." 
-          [(ngModel)]="searchQuery"
-          autocorrect="off"></ion-searchbar>
-      </form>
-    </ion-toolbar>
-  </ion-navbar>   
+		<ion-toolbar>
+			<ion-searchbar aria-placeholder="Search..." [(ngModel)]="searchQuery" (search)="getItems($event)" autocorrect="off"></ion-searchbar>
+		</ion-toolbar>
+	</ion-navbar>
 </ion-header>
 
 <ion-content padding>
 
-  <h3>Welcome to your first Ionic app!</h3>
-
-  <p>
-    This starter project is our way of helping you get a functional app running in record time.
-  </p>
-  <p>
-    Follow along on the tutorial section of the Ionic docs!
-  </p>
-  <p>
-    <button ion-button color="primary" menuToggle>Toggle Menu</button>
-  </p>
-
+	<h1 *ngIf="enteredSearchText !== ''">
+		Enter search text
+	</h1>
+	<ion-list *ngIf="searchItems">
+		<ion-item *ngFor="let item of searchItems">
+			<ion-thumbnail item-left>
+				<img src="{{item.Links.cover.Href}}" (error)="setDefaultImage($event)">
+			</ion-thumbnail>
+			<h2>{{item.Artist}}</h2>
+			<p>{{item.Title}} • {{item.ReleaseDate | date : 'yyyy'}}</p>
+			<button clear item-right>View</button>
+		</ion-item>
+	</ion-list>
 </ion-content>

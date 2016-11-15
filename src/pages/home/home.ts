@@ -8,7 +8,7 @@ import {LoginModel} from '../../Models/Login/login.model';
 
 import {Auth0Vars} from '../../auth0-variables';
 
-import {SideMenuPage, SearchPage} from '../pages';
+import {SideMenuPage} from '../pages';
 
 
 declare var Auth0: any;
@@ -39,9 +39,10 @@ export class HomePage {
             connection: 'Username-Password-Authentication',
             username:   this.loginModel.UserName,
             password:   this.loginModel.Password,
-            scope: 'openid user_metadata roles offline_access'
+            scope: 'openid username email user_metadata roles offline_access'
           }, (err, authResult)=>{
             loader.dismiss();
+            debugger;
             if(err)
             {
                 alert(err);
@@ -60,6 +61,7 @@ export class HomePage {
   }
 
   gotoSideMenu(){
+    //alert('came in');
     this.navCtrl.push(SideMenuPage);
   }
 }

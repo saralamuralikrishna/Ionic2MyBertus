@@ -5,6 +5,7 @@ import { AboutPage } from '../pages/about/about';
 import { ContactPage } from '../pages/contact/contact';
 import { HomePage } from '../pages/home/home';
 import { TabsPage } from '../pages/tabs/tabs';
+import {TestPage} from '../pages/testpage/testpage';
 import {SideMenuPage} from '../pages/sidemenu/sidemenu';
 import {SearchPage} from '../pages/search/search';
 import {AuthConfig, AuthHttp} from 'angular2-jwt';
@@ -31,7 +32,8 @@ export function getAuthHttp(http)
     HomePage,
     TabsPage,
     SideMenuPage,
-    SearchPage
+    SearchPage,
+    TestPage
   ],
   imports: [
     IonicModule.forRoot(MyApp)
@@ -44,7 +46,8 @@ export function getAuthHttp(http)
     HomePage,
     TabsPage,
     SideMenuPage,
-    SearchPage
+    SearchPage,
+    TestPage
   ],
   providers: [
     AuthService,

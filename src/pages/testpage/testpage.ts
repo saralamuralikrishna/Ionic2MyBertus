@@ -5,6 +5,6 @@ import {Component} from '@angular/core';
 })
 export class TestPage{
     constructor(){
-        alert('page loaded');
+        //alert('page loaded');
     }
 }
