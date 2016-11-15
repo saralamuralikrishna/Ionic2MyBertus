@@ -15,13 +15,23 @@
 		Enter search text
 	</h1>
 	<ion-list *ngIf="searchItems">
-		<ion-item *ngFor="let item of searchItems">
-			<ion-thumbnail item-left>
-				<img src="{{item.Links.cover.Href}}" (error)="setDefaultImage($event)">
-			</ion-thumbnail>
-			<h2>{{item.Artist}}</h2>
-			<p>{{item.Title}} • {{item.ReleaseDate | date : 'yyyy'}}</p>
-			<button clear item-right>View</button>
-		</ion-item>
+		<ion-item-sliding *ngFor="let item of searchItems">
+			<ion-item>
+				<ion-thumbnail item-left>
+					<img src="{{item.Links.cover.Href}}" (error)="setDefaultImage($event)">
+				</ion-thumbnail>
+				<h2>{{item.Artist}}</h2>
+				<p>{{item.Title}} • {{item.ReleaseDate | date : 'yyyy'}}</p>
+				<button ion-button outline item-right class="icon ion-chevron-right" (click)="buttonClick()">Details</button>
+			</ion-item>
+			<ion-item-options side="left">
+				<button ion-button (click)="favorite(item)">Favorite</button>
+				<button ion-button color="danger" (click)="share(item)">Share</button>
+			</ion-item-options>
+
+			<ion-item-options side="right">
+				<button ion-button (click)="unread(item)">Unread</button>
+			</ion-item-options>
+		</ion-item-sliding>
 	</ion-list>
 </ion-content>
