@@ -52,7 +52,7 @@ export class SearchPage{
     setDefaultImage(event)
     {
         console.log(event);
-        event.currentTarget.src = "assets/img/image_not_available.jpeg";
+        event.currentTarget.src = "assets/img/image_not_available.jpg";
     }
 
     onPageWillEnter() {
