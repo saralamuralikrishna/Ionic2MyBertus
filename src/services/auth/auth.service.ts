@@ -23,7 +23,7 @@ export class AuthService {
   });
   storage: Storage = new Storage();
   refreshSubscription: any;
-  user: Object;
+  public user: any;
   zoneImpl: NgZone;
   idToken: string;
 
@@ -44,13 +44,12 @@ export class AuthService {
       this.authResultStore(authResult);
       // Fetch profile information
 
-
       this.lock.hide();
 
     });
   }
 
-  public lockGetProfile(idToken) {
+  public lockGetProfile(idToken, afterProfileLoaded = null) {
     this.lock.getProfile(idToken, (error, profile) => {
       if (error) {
         // Handle error
@@ -60,6 +59,10 @@ export class AuthService {
 
       profile.user_metadata = profile.user_metadata || {};
       this.authSetStorageAndUser(profile);
+      if(afterProfileLoaded)
+      {
+        afterProfileLoaded();
+      }
     });
   }
 
@@ -68,8 +71,7 @@ export class AuthService {
     this.user = profile;
   }
 
-  public authResultStore(authResult) {
-    console.log(authResult.idToken);
+  public authResultStore(authResult) {    
     this.storage.set('id_token', authResult.idToken);
     this.idToken = authResult.idToken;
 

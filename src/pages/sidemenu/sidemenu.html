@@ -1,4 +1,4 @@
-<ion-menu [content]="content">
+<ion-menu [content]="content" type="overlay">
 
   <ion-header>
     <ion-toolbar>
@@ -10,6 +10,9 @@
     <ion-list>
       <button ion-item *ngFor="let p of pages" (click)="openPage(p)">
         {{p.title}}
+      </button>
+      <button ion-item (click)="logout()">
+        Log Out
       </button>
     </ion-list>
   </ion-content>

@@ -12,6 +12,7 @@ import {AuthConfig, AuthHttp} from 'angular2-jwt';
 import {Http} from '@angular/http';
 import {Storage} from '@ionic/storage';
 import {AuthService} from '../services/auth/auth.service';
+import {WishlistService} from '../services/wishlist/wishlist.service';
 
 let storage = new Storage();
 
@@ -51,6 +52,7 @@ export function getAuthHttp(http)
   ],
   providers: [
     AuthService,
+    WishlistService,
     {
       provide: AuthHttp,
       useFactory: getAuthHttp,

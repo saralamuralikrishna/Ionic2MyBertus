@@ -1,37 +1,33 @@
 <ion-header>
 	<ion-navbar color="primary">
 		<button ion-button menuToggle>
-      <ion-icon name="menu"></ion-icon>
-    </button>
+			<ion-icon name="menu"></ion-icon>
+		</button>
 		<ion-toolbar>
 			<ion-searchbar aria-placeholder="Search..." [(ngModel)]="searchQuery" (search)="getItems($event)" autocorrect="off"></ion-searchbar>
+			<ion-buttons end>
+				<button ion-button icon-only color="royal" (click)="scanbarCode()">
+        			<ion-icon name="camera" ion-camera></ion-icon>
+      			</button>
+			</ion-buttons>
 		</ion-toolbar>
 	</ion-navbar>
 </ion-header>
 
-<ion-content padding>
-
-	<h1 *ngIf="enteredSearchText !== ''">
+<ion-content>
+	<h1 *ngIf="(!enteredSearchText || enteredSearchText =='')">
 		Enter search text
 	</h1>
-	<ion-list *ngIf="searchItems">
-		<ion-item-sliding *ngFor="let item of searchItems">
-			<ion-item>
-				<ion-thumbnail item-left>
-					<img src="{{item.Links.cover.Href}}" (error)="setDefaultImage($event)">
-				</ion-thumbnail>
-				<h2>{{item.Artist}}</h2>
-				<p>{{item.Title}} • {{item.ReleaseDate | date : 'yyyy'}}</p>
-				<button ion-button outline item-right class="icon ion-chevron-right" (click)="buttonClick()">Details</button>
-			</ion-item>
-			<ion-item-options side="left">
-				<button ion-button (click)="favorite(item)">Favorite</button>
-				<button ion-button color="danger" (click)="share(item)">Share</button>
-			</ion-item-options>
-
-			<ion-item-options side="right">
-				<button ion-button (click)="unread(item)">Unread</button>
-			</ion-item-options>
-		</ion-item-sliding>
+	<ion-list inset class="no-margin" *ngIf="(enteredSearchText && enteredSearchText !='')">
+		<ion-item class="no-padding" *ngFor="let article of searchItems">
+			<ion-thumbnail item-left>
+				<img [src]="article.Links.cover.Href" (error)="setDefaultImage($event)" />
+			</ion-thumbnail>
+			<h2>Artist: {{article.Artist}}</h2>
+			<p>Title: {{article.Title}}</p>
+			<p>Date: {{article.ReleaseDate}}</p>
+			<ion-icon name="heart" (click)="favorite(article)" item-right></ion-icon>
+			<ion-icon name="cart" (click)="addToCart(article)" item-right></ion-icon>			
+		</ion-item>
 	</ion-list>
 </ion-content>

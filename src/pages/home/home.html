@@ -1,38 +1,36 @@
-<ion-header>
-  <ion-navbar primary>
-    <ion-title>My Bertus Login</ion-title>
-  </ion-navbar>
+<ion-header align-title="center">
+  <ion-toolbar color="primary">
+    <ion-title align="center" valign="top">
+      <img src="assets/img/headerimage.png" height="32px" style="padding-right:5px" />My Bertus
+    </ion-title>
+  </ion-toolbar>
 </ion-header>
-<ion-content fab-center outline *ngIf="!auth.authenticated()">
-  <ion-list>
-    <ion-item>
-      <ion-label floating>Username</ion-label>
-      <ion-input type="text" style="border: 1px" [(ngModel)]="loginModel.UserName"></ion-input>          
-    </ion-item>
-    <ion-item>
-      <ion-label floating>Password</ion-label>
-      <ion-input type="password" [(ngModel)]="loginModel.Password" ></ion-input>
-    </ion-item>
-    <ion-item text-center>
-      <button ion-button round (click)="login()">Login</button>        
-    </ion-item>        
-  </ion-list>
-  <!--<button ion-button block (click)="auth.login()">Login</button>-->
-</ion-content>
+<ion-content id="login" verticalAlignment="center">
+    <div style="height:15%">
 
-<ion-content outline fab-center *ngIf="auth.authenticated()">  
-  <ion-list>
-    <ion-item *ngIf="auth.user">
-      <ion-avatar item-left>
-        <img src="{{ auth.user.picture }}">
-      </ion-avatar>
-      <h2>{{ auth.user.nickname }}</h2>
-      <p>{{ auth.user.email }}</p>
-      <p>{{auth.user.roles}}</p>
-      <p>{{auth.user.user_metadata.AccountNumber}}</p>
-      <p>{{auth.user.user_id}}</p>    
-    </ion-item>
-  </ion-list>
-  <button ion-button block (click)="auth.logout()">Logout</button>
-  <button ion-button block (click)="gotoSideMenu()">Goto Sidemenu</button>
+    </div>
+    <div align="center">
+      <ion-row center>
+        <ion-col center>
+          <ion-avatar>
+            <img src="assets/img/notlogedin.png" />
+          </ion-avatar>
+        </ion-col>
+      </ion-row>
+    </div>
+    <ion-list>
+      <ion-item>
+        <ion-label floating>Username</ion-label>
+        <ion-input type="text" style="border: 1px" [(ngModel)]="loginModel.UserName"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label floating>Password</ion-label>
+        <ion-input type="password" [(ngModel)]="loginModel.Password"></ion-input>
+      </ion-item>
+      <ion-item text-center>
+        <button ion-button large round icon-left (click)="login()">
+        <ion-icon name="log-in"></ion-icon>Login
+      </button>
+      </ion-item>
+    </ion-list>  
 </ion-content>
