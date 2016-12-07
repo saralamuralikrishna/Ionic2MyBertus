@@ -1,35 +1,53 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NavController, LoadingController, Platform, ToastController, Toast } from 'ionic-angular';
-import { Http, Headers, RequestOptions, Request, RequestMethod } from '@angular/http';
+import { Http, Request } from '@angular/http';
 import { AuthService } from '../../services/auth/auth.service';
+import { AccountService, ShippingAddress } from '../../services/common/account-service';
 import { AppVariables } from '../../app-variables';
 import { BarcodeScanner } from 'ionic-native';
 import { WishlistService } from '../../services/wishlist/wishlist.service';
+import { OrderlistService } from '../../services/orderlist/orderlist.service';
+import { RequestOptionsService } from '../../services/common/requestoptions.service';
 
 @Component({
     templateUrl: 'search.html'
 })
-export class SearchPage {
+export class SearchPage implements OnInit {
 
     searchQuery: string;
     enteredSearchText: string;
     searchItems: Array<any>;
+    shippingAddresses: Array<ShippingAddress> = new Array<ShippingAddress>();
+    public orderListCount: number = 0;
+    public nextUrl: string = '';
+
+    ngOnInit() {
+        this.accountService.loadShippingAddresses(true).subscribe(shippingAddresses => {
+            this.shippingAddresses = shippingAddresses;
+        }, error => {
+            alert('Error while getting shipping addresses');
+        });
+
+        this.orderlistService.getOrderListWihtOutArticleData().subscribe(orderlistData => {
+            this.orderListCount = (orderlistData.Items).length;
+        });
+    }
 
     constructor(private navController: NavController, private http: Http,
         private auth: AuthService,
         public loadingCtrl: LoadingController,
         private platform: Platform,
         private toastCtrl: ToastController,
-        private wishlistService: WishlistService
+        private wishlistService: WishlistService,
+        private accountService: AccountService,
+        private orderlistService: OrderlistService,
+        private requestOptionsService: RequestOptionsService
     ) {
         this.searchQuery = '';
     }
 
     getItems(event) {
-        let loading = this.loadingCtrl.create({
-            spinner: 'bubbles'
-        });
-
+        this.searchItems=[];
         let baseUrl = AppVariables.API_URL;
 
         if (this.platform.is('mobile')) {
@@ -41,39 +59,37 @@ export class SearchPage {
         }
 
         this.enteredSearchText = this.searchQuery;
-        //console.log(event);
 
-        let headers = new Headers();
-        headers.append("Authorization", "Bearer " + this.auth.idToken)
-        headers.append("X-Requested-With", "XMLHttpRequest");
+        let searchUrl = baseUrl + '/api/Articles?filter=' + this.enteredSearchText + '||||||Available,Direct,NotAvailableYet,PreOrder,Soon|0|0|0|0|All||||||||||||||||0';
+        this.getSearchData(searchUrl);
+    }
 
-        let requestOptions = new RequestOptions();
-        requestOptions.withCredentials = true;
-        requestOptions.headers = headers;
-        requestOptions.method = RequestMethod.Get;
-        requestOptions.url = baseUrl + '/api/Articles?filter='
-            + this.enteredSearchText +
-            '||||||Available,Direct,NotAvailableYet,PreOrder,Soon|0|0|0|0|All||||||||||||||||0';
+    getSearchData(location: string) {
+        let loading = this.loadingCtrl.create({
+            spinner: 'bubbles'
+        });
+        let requestOptions = this.requestOptionsService.getRequestOptions();
         let req = new Request(requestOptions);
         loading.present();
-        this.http.request(req)
-            // Call map on the response observable to get the parsed people object
+        this.http.get(location, req)
             .map(res => res.json())
-            // Subscribe to the observable to get the parsed people object and attach it to the
-            // component
             .subscribe(searchResult => {
-                //console.log(searchResult);
-                this.searchItems = searchResult.Collection;
-                console.log(this.searchItems);
+                if (searchResult.Collection) {
+                    for (let count = 0; count < searchResult.Collection.length; count++) {
+                        this.searchItems.push(searchResult.Collection[count]);
+                    }
+                }
+
+                if (searchResult.Links && searchResult.Links.next) {
+                    this.nextUrl = searchResult.Links.next.Href;
+                }
                 loading.dismiss();
             }, err => {
-                console.log(err);
                 loading.dismiss();
             });
     }
 
     setDefaultImage(event) {
-        console.log(event);
         event.currentTarget.src = "assets/img/image_not_available.jpg";
     }
 
@@ -86,14 +102,14 @@ export class SearchPage {
             alert(error);
         });
     }
-    createToaster(message :string, cssClass: string) : Toast{
+    createToaster(message: string, cssClass: string): Toast {
         let toast = this.toastCtrl.create({
-                        message: message,
-                        duration: 3000,
-                        position: 'bottom',
-                        cssClass: cssClass
-                        //showCloseButton:true
-                    });
+            message: message,
+            duration: 3000,
+            position: 'bottom',
+            cssClass: cssClass
+            //showCloseButton:true
+        });
 
         return toast;
     }
@@ -102,22 +118,37 @@ export class SearchPage {
         this.wishlistService.addToWishlist(article.Id).subscribe(data => {
             if (!isNaN(data)) {
                 if (data > 0) {
-                   let toast = this.createToaster('Article ' + article.Title + ' added to wishlist', '');
+                    let toast = this.createToaster('Article ' + article.Title + ' added to wishlist', '');
                     toast.present();
                 }
-                else
-                {
+                else {
                     let toast = this.createToaster('Article ' + article.Title + ' is already present in wishlist', 'error');
                     toast.present();
                 }
             }
-            console.log(data);
         }, error => {
             let toast = this.createToaster(error, 'error');
             toast.present();
         });
+    }
 
 
+    addToCart(article: any) {
+        let data = {
+            ArticleId: article.Id,
+            ShippingAddressId: this.shippingAddresses[0].id,
+            Reference: 'Direct Order',
+            Quantity: 1,
+            IsBackorderAllowed: true
+        }
+        this.orderlistService.addToOrderlist(data).subscribe(data => {
+            let toast = this.createToaster('Article ' + article.Title + ' added to order list', '');
+            toast.present();
+            this.orderListCount += data;
+        }, error => {
+            let toast = this.createToaster('Error while adding ' + article.Title + ' to order list', 'error');
+            toast.present();
+        });
     }
 
 }

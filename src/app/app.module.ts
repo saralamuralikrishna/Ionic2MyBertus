@@ -13,6 +13,9 @@ import {Http} from '@angular/http';
 import {Storage} from '@ionic/storage';
 import {AuthService} from '../services/auth/auth.service';
 import {WishlistService} from '../services/wishlist/wishlist.service';
+import {RequestOptionsService} from '../services/common/requestoptions.service';
+import {AccountService} from '../services/common/account-service';
+import {OrderlistService} from '../services/orderlist/orderlist.service';
 
 let storage = new Storage();
 
@@ -52,7 +55,10 @@ export function getAuthHttp(http)
   ],
   providers: [
     AuthService,
+    RequestOptionsService,
     WishlistService,
+    AccountService,
+    OrderlistService,
     {
       provide: AuthHttp,
       useFactory: getAuthHttp,

@@ -15,6 +15,9 @@
 </ion-header>
 
 <ion-content>
+	<ion-fab top right edge>
+		<button ion-fab color="light"><ion-icon name="cart"><ion-badge>{{orderListCount}}</ion-badge></ion-icon></button>
+	</ion-fab>
 	<h1 *ngIf="(!enteredSearchText || enteredSearchText =='')">
 		Enter search text
 	</h1>
@@ -27,7 +30,8 @@
 			<p>Title: {{article.Title}}</p>
 			<p>Date: {{article.ReleaseDate}}</p>
 			<ion-icon name="heart" (click)="favorite(article)" item-right></ion-icon>
-			<ion-icon name="cart" (click)="addToCart(article)" item-right></ion-icon>			
+			<ion-icon name="cart" (click)="addToCart(article)" item-right></ion-icon>
 		</ion-item>
+		<button ion-button round full (click)="getSearchData(nextUrl)" *ngIf="nextUrl != ''">Load More </button>
 	</ion-list>
 </ion-content>
