@@ -28,7 +28,8 @@
 			</ion-thumbnail>
 			<h2>Artist: {{article.Artist}}</h2>
 			<p>Title: {{article.Title}}</p>
-			<p>Date: {{article.ReleaseDate}}</p>
+			<p>Date: {{article.ReleaseDate | date: 'MMM dd yyyy'}}</p>
+			<p class="item-price">Price: {{article.Price | formatCurrency }}</p>
 			<ion-icon name="heart" (click)="favorite(article)" item-right></ion-icon>
 			<ion-icon name="cart" (click)="addToCart(article)" item-right></ion-icon>
 		</ion-item>

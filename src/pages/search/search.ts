@@ -8,7 +8,6 @@ import { BarcodeScanner } from 'ionic-native';
 import { WishlistService } from '../../services/wishlist/wishlist.service';
 import { OrderlistService } from '../../services/orderlist/orderlist.service';
 import { RequestOptionsService } from '../../services/common/requestoptions.service';
-
 @Component({
     templateUrl: 'search.html'
 })

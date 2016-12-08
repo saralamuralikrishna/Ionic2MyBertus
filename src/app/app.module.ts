@@ -16,6 +16,7 @@ import {WishlistService} from '../services/wishlist/wishlist.service';
 import {RequestOptionsService} from '../services/common/requestoptions.service';
 import {AccountService} from '../services/common/account-service';
 import {OrderlistService} from '../services/orderlist/orderlist.service';
+import {CurrencyPipe} from '../pipes/currency.pipe';
 
 let storage = new Storage();
 
@@ -37,7 +38,8 @@ export function getAuthHttp(http)
     TabsPage,
     SideMenuPage,
     SearchPage,
-    TestPage
+    TestPage,
+    CurrencyPipe
   ],
   imports: [
     IonicModule.forRoot(MyApp)
