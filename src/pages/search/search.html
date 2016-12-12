@@ -23,12 +23,12 @@
 	</h1>
 	<ion-list inset class="no-margin" *ngIf="(enteredSearchText && enteredSearchText !='')">
 		<ion-item class="no-padding" *ngFor="let article of searchItems">
-			<ion-thumbnail item-left>
+			<ion-thumbnail item-left (tap)="loadArticleDetails(article.Id)">
 				<img [src]="article.Links.cover.Href" (error)="setDefaultImage($event)" />
 			</ion-thumbnail>
 			<h2>Artist: {{article.Artist}}</h2>
 			<p>Title: {{article.Title}}</p>
-			<p>Date: {{article.ReleaseDate | date: 'MMM dd yyyy'}}</p>
+			<p>Date: {{article.ReleaseDate }}</p>
 			<p class="item-price">Price: {{article.Price | formatCurrency }}</p>
 			<ion-icon name="heart" (click)="favorite(article)" item-right></ion-icon>
 			<ion-icon name="cart" (click)="addToCart(article)" item-right></ion-icon>

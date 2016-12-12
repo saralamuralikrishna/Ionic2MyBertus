@@ -1,0 +1,49 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-title>
+            Article Details
+        </ion-title>
+        <ion-buttons start>
+            <button ion-button (click)="dismiss()">
+                <span color="primary" showWhen="ios">Cancel</span>
+                <ion-icon name="md-close" showWhen="android,windows"></ion-icon>
+            </button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+<ion-content>
+    <ion-card *ngIf="articleDetails">
+        <ion-slides pager>
+            <ion-slide>
+                <img [src]="articleDetails.Links.cover.Href" (error)="setDefaultImage($event)" />
+            </ion-slide>
+            <ion-slide>
+                <img [src]="articleDetails.Links.secondaryCover.Href" (error)="setDefaultImage($event)" />
+            </ion-slide>
+        </ion-slides>
+        <ion-card-content>
+            <ion-card-title>
+                Title :{{articleDetails.Title}}
+            </ion-card-title>
+            <p>Artist: {{articleDetails.Artist}}</p>
+            <p>Release Date: {{articleDetails.ReleaseDate }}</p>
+            <p>Price: {{articleDetails.Price | formatCurrency }}</p>
+            <p>Info: {{articleDetails.InfoLine }}</p>
+            <p *ngIf="articleDetails.ArticleTags">
+                Article Tags:
+                <abbr *ngFor="let tag of articleDetails.ArticleTags">
+                    {{tag}}<span ng-if="!$last">,</span>
+                </abbr>
+            </p>
+            <p *ngIf="articleDetails.TitleTag">
+                {{articleDetails.TitleTag}}
+            </p>
+            <p>
+                {{articleDetails.Units}}-{{articleDetails.MediaId}} {{articleDetails.OriginDescription}}
+            </p>
+            <p>
+                <label>Genre:</label> {{articleDetails.GenreDescription}}
+            </p>
+        </ion-card-content>
+    </ion-card>
+</ion-content>

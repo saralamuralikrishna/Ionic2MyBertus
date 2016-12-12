@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { NavController, LoadingController, Platform, ToastController, Toast } from 'ionic-angular';
+import { NavController, LoadingController, Platform, ToastController, Toast, ModalController } from 'ionic-angular';
 import { Http, Request } from '@angular/http';
 import { AuthService } from '../../services/auth/auth.service';
 import { AccountService, ShippingAddress } from '../../services/common/account-service';
@@ -8,6 +8,8 @@ import { BarcodeScanner } from 'ionic-native';
 import { WishlistService } from '../../services/wishlist/wishlist.service';
 import { OrderlistService } from '../../services/orderlist/orderlist.service';
 import { RequestOptionsService } from '../../services/common/requestoptions.service';
+import { ArticleDetailsPage } from '../articledetails/articledetails';
+
 @Component({
     templateUrl: 'search.html'
 })
@@ -40,13 +42,14 @@ export class SearchPage implements OnInit {
         private wishlistService: WishlistService,
         private accountService: AccountService,
         private orderlistService: OrderlistService,
-        private requestOptionsService: RequestOptionsService
+        private requestOptionsService: RequestOptionsService,
+        public modalCtrl: ModalController
     ) {
         this.searchQuery = '';
     }
 
     getItems(event) {
-        this.searchItems=[];
+        this.searchItems = [];
         let baseUrl = AppVariables.API_URL;
 
         if (this.platform.is('mobile')) {
@@ -86,6 +89,11 @@ export class SearchPage implements OnInit {
             }, err => {
                 loading.dismiss();
             });
+    }
+
+    loadArticleDetails(articleId) {
+        let profileModal = this.modalCtrl.create(ArticleDetailsPage, { articleId: articleId });
+        profileModal.present();
     }
 
     setDefaultImage(event) {

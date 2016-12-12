@@ -8,6 +8,7 @@ import { TabsPage } from '../pages/tabs/tabs';
 import {TestPage} from '../pages/testpage/testpage';
 import {SideMenuPage} from '../pages/sidemenu/sidemenu';
 import {SearchPage} from '../pages/search/search';
+import {ArticleDetailsPage} from '../pages/articledetails/articledetails';
 import {AuthConfig, AuthHttp} from 'angular2-jwt';
 import {Http} from '@angular/http';
 import {Storage} from '@ionic/storage';
@@ -17,6 +18,7 @@ import {RequestOptionsService} from '../services/common/requestoptions.service';
 import {AccountService} from '../services/common/account-service';
 import {OrderlistService} from '../services/orderlist/orderlist.service';
 import {CurrencyPipe} from '../pipes/currency.pipe';
+import {ArticleService} from '../services/common/article-service';
 
 let storage = new Storage();
 
@@ -39,6 +41,7 @@ export function getAuthHttp(http)
     SideMenuPage,
     SearchPage,
     TestPage,
+    ArticleDetailsPage,
     CurrencyPipe
   ],
   imports: [
@@ -53,14 +56,16 @@ export function getAuthHttp(http)
     TabsPage,
     SideMenuPage,
     SearchPage,
+    ArticleDetailsPage,
     TestPage
   ],
   providers: [
     AuthService,
     RequestOptionsService,
     WishlistService,
-    AccountService,
+    AccountService,    
     OrderlistService,
+    ArticleService,
     {
       provide: AuthHttp,
       useFactory: getAuthHttp,
