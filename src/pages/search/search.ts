@@ -30,7 +30,12 @@ export class SearchPage implements OnInit {
         });
 
         this.orderlistService.getOrderListWihtOutArticleData().subscribe(orderlistData => {
-            this.orderListCount = (orderlistData.Items).length;
+            console.log(orderlistData);
+            this.orderListCount =0;
+            for(let count=0;count<orderlistData.Items.length;count++)
+            {
+                this.orderListCount += orderlistData.Items[count].Quantity;
+            }
         });
     }
 

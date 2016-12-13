@@ -18,7 +18,16 @@ export class AccountService {
     constructor(private requestOptionsService: RequestOptionsService, private http: Http) {
         this.account = new Account(null, null, null);
     }
-    
+
+    getShippingAddress():Observable<any>{
+        return Observable.fromPromise(this.storage.get("account").then(account => {
+            if(account){
+                return account.shippingAddresses;
+            }
+        }, error =>{
+            return this.loadShippingAddresses(true);
+        }));
+    }    
 
     loadShippingAddresses(skipCache): Observable<any> {
         if (skipCache || this.account.shippingAddresses.length === 0) {

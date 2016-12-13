@@ -23,7 +23,7 @@
         </ion-slides>
         <ion-card-content>
             <ion-card-title>
-                Title :{{articleDetails.Title}}
+                {{articleDetails.Title}}
             </ion-card-title>
             <p>Artist: {{articleDetails.Artist}}</p>
             <p>Release Date: {{articleDetails.ReleaseDate }}</p>
@@ -39,11 +39,29 @@
                 {{articleDetails.TitleTag}}
             </p>
             <p>
-                {{articleDetails.Units}}-{{articleDetails.MediaId}} {{articleDetails.OriginDescription}}
+                {{articleDetails.OriginDescription}}
             </p>
             <p>
                 <label>Genre:</label> {{articleDetails.GenreDescription}}
             </p>
+
+
+            <ion-list>
+                <ion-item>
+                    <ion-select class="myCustomSelect" [(ngModel)]="orderItem.shippingAddressId">
+                        <ion-option *ngFor="let shp of shippingAddresses" [value]="shp.id">{{shp.id}}-{{shp.description}}</ion-option>
+                    </ion-select>
+                </ion-item>
+                <ion-item>
+                    <ion-input type="number" min="1" step="1" [(ngModel)]="orderItem.numberOfItems"></ion-input>
+                </ion-item>
+                <ion-item>
+                    <button ion-button icon-left (click)="addToCart()">
+                        <ion-icon name="basket"></ion-icon>
+                            Add to basket
+                    </button>
+                </ion-item>
+            </ion-list>
         </ion-card-content>
     </ion-card>
 </ion-content>
