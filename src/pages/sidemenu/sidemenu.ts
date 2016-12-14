@@ -1,5 +1,5 @@
 import {Component, ViewChild} from '@angular/core';
-import {SearchPage, TestPage} from '../pages';
+import {SearchPage, TestPage,OrderListComponent} from '../pages';
 import { MenuController, NavController, Nav, App} from 'ionic-angular';
 import {AuthService} from '../../services/auth/auth.service';
 import {TabsPage} from '../tabs/tabs';
@@ -23,7 +23,7 @@ export class SideMenuPage
     // set our app's pages
     this.pages = [
       { title: 'Search', component: SearchPage },
-      { title: 'Order List', component: TestPage},
+      { title: 'Order List', component: OrderListComponent},
       { title: 'Wisth List', component: TestPage}
     ];
    }

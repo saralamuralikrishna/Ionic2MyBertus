@@ -19,6 +19,7 @@ import {AccountService} from '../services/common/account-service';
 import {OrderlistService} from '../services/orderlist/orderlist.service';
 import {CurrencyPipe} from '../pipes/currency.pipe';
 import {ArticleService} from '../services/common/article-service';
+import {OrderListComponent} from '../pages/pages';
 
 let storage = new Storage();
 
@@ -42,6 +43,7 @@ export function getAuthHttp(http)
     SearchPage,
     TestPage,
     ArticleDetailsPage,
+    OrderListComponent,
     CurrencyPipe
   ],
   imports: [
@@ -57,6 +59,7 @@ export function getAuthHttp(http)
     SideMenuPage,
     SearchPage,
     ArticleDetailsPage,
+    OrderListComponent,
     TestPage
   ],
   providers: [

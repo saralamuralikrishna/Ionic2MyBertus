@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { NavController, LoadingController, Platform, ToastController, Toast, ModalController } from 'ionic-angular';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { NavController, LoadingController, Platform, ToastController, Toast, ModalController, Events } from 'ionic-angular';
 import { Http, Request } from '@angular/http';
 import { AuthService } from '../../services/auth/auth.service';
 import { AccountService, ShippingAddress } from '../../services/common/account-service';
@@ -13,7 +13,7 @@ import { ArticleDetailsPage } from '../articledetails/articledetails';
 @Component({
     templateUrl: 'search.html'
 })
-export class SearchPage implements OnInit {
+export class SearchPage implements OnInit, OnDestroy {
 
     searchQuery: string;
     enteredSearchText: string;
@@ -29,14 +29,14 @@ export class SearchPage implements OnInit {
             alert('Error while getting shipping addresses');
         });
 
-        this.orderlistService.getOrderListWihtOutArticleData().subscribe(orderlistData => {
-            console.log(orderlistData);
-            this.orderListCount =0;
-            for(let count=0;count<orderlistData.Items.length;count++)
-            {
+        this.orderlistService.getOrderListWihtOutArticleData().subscribe(orderlistData => {            
+            this.orderListCount = 0;
+            for (let count = 0; count < orderlistData.Items.length; count++) {
                 this.orderListCount += orderlistData.Items[count].Quantity;
             }
         });
+
+        
     }
 
     constructor(private navController: NavController, private http: Http,
@@ -48,9 +48,10 @@ export class SearchPage implements OnInit {
         private accountService: AccountService,
         private orderlistService: OrderlistService,
         private requestOptionsService: RequestOptionsService,
-        public modalCtrl: ModalController
+        public modalCtrl: ModalController,
+        public events: Events
     ) {
-        this.searchQuery = '';
+        this.searchQuery = '';        
     }
 
     getItems(event) {
@@ -97,8 +98,19 @@ export class SearchPage implements OnInit {
     }
 
     loadArticleDetails(articleId) {
+        this.events.unsubscribe('orderListItemsAdded');
         let profileModal = this.modalCtrl.create(ArticleDetailsPage, { articleId: articleId });
         profileModal.present();
+
+        this.events.subscribe('orderListItemsAdded', (data) => {
+            console.log('called in event with data ', data);
+            if(data.length > 0)
+            {
+                console.log(data[0].numberOfItemsAdded);
+                this.orderListCount += parseInt(data[0].numberOfItemsAdded,10);
+            }
+            
+        });
     }
 
     setDefaultImage(event) {
@@ -161,6 +173,11 @@ export class SearchPage implements OnInit {
             let toast = this.createToaster('Error while adding ' + article.Title + ' to order list', 'error');
             toast.present();
         });
+    }
+
+    ngOnDestroy() {
+        // prevent memory leak when component destroyed
+        this.events.unsubscribe('orderListItemsAdded');
     }
 
 }

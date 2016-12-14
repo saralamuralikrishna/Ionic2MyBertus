@@ -23,8 +23,11 @@
 	</h1>
 	<ion-list inset class="no-margin" *ngIf="(enteredSearchText && enteredSearchText !='')">
 		<ion-item class="no-padding" *ngFor="let article of searchItems">
-			<ion-thumbnail item-left (tap)="loadArticleDetails(article.Id)">
+			<ion-thumbnail item-left *ngIf="article.Links && article.Links.cover" (tap)="loadArticleDetails(article.Id)">
 				<img [src]="article.Links.cover.Href" (error)="setDefaultImage($event)" />
+			</ion-thumbnail>
+			<ion-thumbnail item-left *ngIf="!(article.Links && article.Links.cover)" (tap)="loadArticleDetails(article.Id)">
+				<img src="assets/img/image_not_available.jpg" />
 			</ion-thumbnail>
 			<h2>Artist: {{article.Artist}}</h2>
 			<p>Title: {{article.Title}}</p>

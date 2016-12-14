@@ -1,0 +1,26 @@
+<ion-header>
+	<ion-navbar color="primary">
+		<button ion-button menuToggle>
+			<ion-icon name="menu"></ion-icon>
+		</button>
+        Order List		
+	</ion-navbar>
+</ion-header>
+
+<ion-content>
+    <ion-list inset class="no-margin">
+		<ion-item class="no-padding" *ngFor="let orderItem of orderList">
+			<ion-thumbnail item-left *ngIf="orderItem.Article.Links && orderItem.Article.Links.cover" (tap)="loadArticleDetails(orderItem.A.Id)">
+				<img [src]="orderItem.Article.Links.cover.Href" (error)="setDefaultImage($event)" />
+			</ion-thumbnail>
+			<ion-thumbnail item-left *ngIf="!(orderItem.Article.Links && orderItem.Article.Links.cover)" (tap)="loadArticleDetails(orderItem.Article.Id)">
+				<img src="assets/img/image_not_available.jpg" />
+			</ion-thumbnail>
+			<h2>Artist: {{orderItem.Article.Artist}}</h2>
+			<p>Title: {{orderItem.Article.Title}}</p>
+			<p>Date: {{orderItem.Article.ReleaseDate }}</p>
+			<p class="item-price">Price: {{orderItem.Article.Price | formatCurrency }}</p>
+			<ion-icon name="delete" (click)="addToCart(orderItem.Article)" item-right></ion-icon>
+		</ion-item>		
+	</ion-list>
+</ion-content>

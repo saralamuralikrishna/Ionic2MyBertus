@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ArticleService } from '../../services/common/article-service';
 import { AccountService } from '../../services/common/account-service';
 import { OrderlistService } from '../../services/orderlist/orderlist.service';
-import { Platform, NavParams, ViewController,ToastController, Toast } from 'ionic-angular';
+import { Platform, NavParams, ViewController,ToastController, Toast, Events } from 'ionic-angular';
 
 @Component({
     templateUrl: 'articledetails.html'
@@ -17,8 +17,7 @@ export class ArticleDetailsPage implements OnInit {
     }
 
     ngOnInit() {
-        this.articleService.getArticleDetails(this.params.get('articleId')).subscribe(articleDetails => {
-            console.log(articleDetails);
+        this.articleService.getArticleDetails(this.params.get('articleId')).subscribe(articleDetails => {            
             this.articleDetails = articleDetails;
         }, err => {
             console.log(err);
@@ -28,7 +27,6 @@ export class ArticleDetailsPage implements OnInit {
         this.accountService.getShippingAddress().subscribe(shippingAddresses => {
             this.shippingAddresses = shippingAddresses;
             this.orderItem.shippingAddressId = shippingAddresses[0].id;
-            console.log(shippingAddresses[0]);
         }, err => {
             console.log(err);
             alert(err);
@@ -41,10 +39,11 @@ export class ArticleDetailsPage implements OnInit {
     constructor(public platform: Platform,
         public params: NavParams,
         public viewCtrl: ViewController,
-        private articleService: ArticleService, 
-        private accountService: AccountService,
-        private toastCtrl: ToastController,
-        private orderlistService: OrderlistService) {
+        public articleService: ArticleService, 
+        public accountService: AccountService,
+        public toastCtrl: ToastController,
+        public orderlistService: OrderlistService,
+        public events : Events) {
 
 
     }
@@ -84,9 +83,16 @@ export class ArticleDetailsPage implements OnInit {
             Quantity: this.orderItem.numberOfItems,
             IsBackorderAllowed: true
         }
+
         this.orderlistService.addToOrderlist(data).subscribe(data => {
             let toast = this.createToaster('Article ' + this.articleDetails.Title + ' added to order list', '');
             toast.present();
+            let objectData ={ 
+                articleId : this.articleDetails.Id, 
+                numberOfItemsAdded: this.orderItem.numberOfItems 
+            };
+            
+            this.events.publish('orderListItemsAdded', objectData)
         }, error => {
             let toast = this.createToaster('Error while adding ' + this.articleDetails.Title + ' to order list', 'error');
             toast.present();
