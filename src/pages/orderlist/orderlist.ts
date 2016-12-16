@@ -41,6 +41,18 @@ export class OrderListComponent implements OnInit {
             loading.dismiss();
             alert(error);
         });
+    }    
+
+    getShippingAddressFormatted(id:number){
+        let result = this.shippingAddresses.filter(value=>{
+           return value.id === id;
+        });        
+        if(result.length > 0)
+        {
+            return result[0].id + '-' + result[0].description;
+        }
+
+        return id +'';
     }
 
     setDefaultImage(event) {

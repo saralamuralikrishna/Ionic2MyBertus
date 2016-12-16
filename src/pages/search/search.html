@@ -9,15 +9,20 @@
 				<button ion-button icon-only color="royal" (click)="scanbarCode()">
         			<ion-icon name="camera" ion-camera></ion-icon>
       			</button>
+				<button ion-button icon-only color="royal" (click)="openOrderList()" id="topcartButton">
+        			<ion-icon name="cart" ion-cart>
+					 	<span class="carttext">	{{orderListCount}} </span>
+					</ion-icon>
+      			</button>
 			</ion-buttons>
 		</ion-toolbar>
 	</ion-navbar>
 </ion-header>
 
 <ion-content>
-	<ion-fab top right edge>
+	<!--<ion-fab top right edge>
 		<button ion-fab color="light"><ion-icon name="cart"><ion-badge>{{orderListCount}}</ion-badge></ion-icon></button>
-	</ion-fab>
+	</ion-fab>-->
 	<h1 *ngIf="(!enteredSearchText || enteredSearchText =='')">
 		Enter search text
 	</h1>

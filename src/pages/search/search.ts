@@ -1,5 +1,5 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { NavController, LoadingController, Platform, ToastController, Toast, ModalController, Events } from 'ionic-angular';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { NavController, LoadingController, Platform, ToastController, Toast, ModalController, Events, Nav, MenuController } from 'ionic-angular';
 import { Http, Request } from '@angular/http';
 import { AuthService } from '../../services/auth/auth.service';
 import { AccountService, ShippingAddress } from '../../services/common/account-service';
@@ -9,6 +9,7 @@ import { WishlistService } from '../../services/wishlist/wishlist.service';
 import { OrderlistService } from '../../services/orderlist/orderlist.service';
 import { RequestOptionsService } from '../../services/common/requestoptions.service';
 import { ArticleDetailsPage } from '../articledetails/articledetails';
+import {OrderListComponent} from '../orderlist/orderlist';
 
 @Component({
     templateUrl: 'search.html'
@@ -49,7 +50,8 @@ export class SearchPage implements OnInit, OnDestroy {
         private orderlistService: OrderlistService,
         private requestOptionsService: RequestOptionsService,
         public modalCtrl: ModalController,
-        public events: Events
+        public events: Events,
+        public menu: MenuController 
     ) {
         this.searchQuery = '';        
     }
@@ -178,6 +180,10 @@ export class SearchPage implements OnInit, OnDestroy {
     ngOnDestroy() {
         // prevent memory leak when component destroyed
         this.events.unsubscribe('orderListItemsAdded');
+    }
+
+    openOrderList(){
+        this.navController.setRoot(OrderListComponent);
     }
 
 }
